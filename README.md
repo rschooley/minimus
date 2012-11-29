@@ -37,3 +37,56 @@ stylesheets:
         - public/stylesheets/_vendor/boilerplate-min.css
         - public/stylesheets/site.css
 ```
+
+sample express 2.x
+==================
+Until this is a proper NPM package I toss the minimus dir into a node_modules_local dir.
+
+```javascript
+
+// inside app.configure
+
+minimus = minimus({
+	debug: true,
+    useMinified: settings.useMinifiedAssets,
+    yamlFilePath: __dirname + '/config/assets.yml'
+});
+
+...
+
+//
+// helpers
+//
+
+app.dynamicHelpers ({
+    javascripts: function (req, res) {
+        return function (name) {
+            return minimus.javascripts(name);
+        }
+    },
+    stylesheets: function (req, res) {
+        return function (name) {
+            return minimus.stylesheets(name);
+        }
+    },
+    env: function (req, res) {
+        return function () {
+            return settings.env;
+        }
+    }
+});
+```
+
+In the layut file:
+
+```html
+<%- stylesheets('app') %>
+<%- javascripts('modernizr') %>
+
+...
+<%- javascripts('app') %>
+```
+
+express 3.x
+===========
+I have a version that works in express 3 using middleware instead of helpers and will upload that at some point.
