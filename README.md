@@ -12,6 +12,7 @@ sample yaml file
 ================
 sample config/assets.yml
 
+```yaml
 s3:
     key: foo
     secret: bar
@@ -35,3 +36,4 @@ stylesheets:
     app-min:
         - public/stylesheets/_vendor/boilerplate-min.css
         - public/stylesheets/site.css
+```
