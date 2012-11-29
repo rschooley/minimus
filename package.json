@@ -1,0 +1,13 @@
+{
+	"name": "optimus", 
+	"version": "0.0.1", 
+	"dependencies": {
+	    "knox": ">= 0.3.1",
+		"step": ">= 0.0.5",
+		"stylus": ">= 0.29.0",
+		"yaml": ">= 0.2.3"
+	}, 
+	"engines": {
+    	"node": "*"
+	}
+}
