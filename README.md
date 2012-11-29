@@ -1,7 +1,7 @@
 minimus
 =======
 
-Asset bundler and deployer for node and S3
+Asset bundler and deployer for node and S3.
 
 
 current state
