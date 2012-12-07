@@ -10,5 +10,5 @@
 	"engines": {
     	"node": "*"
 	},
-	"main": "./lib/minimus.js",
+	"main": "./lib/minimus.js"
 }
