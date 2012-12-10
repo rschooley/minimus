@@ -42,7 +42,7 @@ stylesheets:
 
 sample express 2.x
 ==================
-Until this is a proper NPM package I toss the minimus dir into a node_modules_local dir.
+Until this is a proper NPM package I add the project as a submodule in git.
 
 ```javascript
 
