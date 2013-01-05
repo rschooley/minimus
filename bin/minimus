@@ -75,16 +75,21 @@ fs.exists = fs.exists || require('path').exists;                                
                     group   = this.group();
                 
                 files.forEach(function (file) {
-                    var filePath    = assetsPath + '/' + file,
-                        extension   = path.extname(file),
-                        headers     = {};
+                    var filePath        = assetsPath + '/' + file,
+                        fileWithHash    = '';
+                        extension       = path.extname(file),
+                        headers         = {};
                     
                     headers = {
                         'Content-Type': contentType(extension),     // MIME
                         'x-amz-acl': 'public-read'
                     };
-                        
-                    client.putFile(filePath, assetType(file) + '/' + file, headers, group());
+                    
+                    if (assets.s3.hasOwnProperty('hash')) {
+                        fileWithHash = file.replace('.', '-' + assets.s3.hash + '.');
+                    }
+                    
+                    client.putFile(filePath, assetType(file) + '/' + fileWithHash, headers, group());
                 });
             },
             function done (err, stdout, stderr) {
