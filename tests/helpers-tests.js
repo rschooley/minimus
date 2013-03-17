@@ -15,6 +15,20 @@ describe('helers', function () {
 			helpers.defaults.should.be.a('object');
 		});
 
+		it('should default "assets file"', function () {
+			var assetsFile 		= helpers.defaults.assetsFile,
+				pathHasDefault 	= false;
+
+			should.exist(assetsFile);
+		
+			// the path changes on how this is called because of process.cwd
+			// in the app it is typically where app/web/server.js resides
+			// in tests it is the test dir
+			// in upstart it is / (I think)
+			pathHasDefault = assetsFile.indexOf('/config/assets.yml') > -1;			
+			pathHasDefault.should.be.ok;
+		});
+
 		it('should default "debug" to false', function () {
 			var debug = helpers.defaults.debug;
 
@@ -53,6 +67,13 @@ describe('helers', function () {
 		})
 
 		describe('should override specified value(s)', function () {
+			it('for "assetsFile"', function () {
+				var value = 'foo/bar/baz';
+
+				settings = helpers.settings({ assetsFile: value });
+				settings.assetsFile.should.equal(value);
+			});
+
 			it('for "debug"', function () {
 				settings = helpers.settings({ debug: true });
 				settings.debug.should.equal(true);
