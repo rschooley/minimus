@@ -1,12 +1,25 @@
 
 var should      = require('should'),
+	yaml    	= require('js-yaml'); // register .yaml require handler (mind = blown)
 
 	helpers		= require('../lib/helpers');
 
-describe('helers', function () {
+describe('helpers', function () {
 	it('should return an object', function () {
 		should.exist(helpers);
 		helpers.should.be.a('object');
+	});
+
+	describe('#assets', function () {
+		it('should have an "assets" function', function () {
+			should.exist(helpers.assets);
+		});
+
+		it('should return an object', function () {
+			//var assetsFile = helpers.defaults.assetsFile 
+
+			//helpers.assets();
+		});
 	});
 
 	describe('#defaults', function () {
