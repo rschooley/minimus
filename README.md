@@ -1,8 +1,19 @@
-minimus
+Overview
 =======
 
 Asset bundler and deployer for node and S3.
 
+Install
+=============
+Minimus is currently not available through npm.  The project can be loaded by adding the following to your package.json file:
+
+```javascript
+{
+    ....
+    "minimus": "git+https://github.com/rschooley/minimus.git",
+    ...
+}
+```
 
 current state
 =============
@@ -21,7 +32,7 @@ s3:
     bucket: baz
 
 javascripts:
-    app-min:
+    app:
         - public/javascripts/_vendor/plugins.js
         - public/javascripts/_vendor/jquery.tmpl.min.js
         - public/javascripts/_vendor/json2.js
@@ -31,26 +42,25 @@ javascripts:
         - public/javascripts/views/hello-world.js
         - public/templates/hello-world.jst
         
-    modernizr-min:
+    modernizr:
         - public/javascripts/_vendor/modernizr-2.5.3.min.js
 
 stylesheets:
-    app-min:
+    app:
         - public/stylesheets/_vendor/boilerplate-min.css
         - public/stylesheets/site.css
 ```
 
 sample express 2.x
 ==================
-Until this is a proper NPM package I add the project as a submodule in git.
+Minimus supports Express 2.x apps through helpers.
 
 ```javascript
 
 // inside app.configure
 
 minimus = minimus({
-	debug: true,
-    useMinified: settings.useMinifiedAssets,
+    useMinified: false,
     yamlFilePath: __dirname + '/config/assets.yml'
 });
 
@@ -79,7 +89,7 @@ app.dynamicHelpers ({
 });
 ```
 
-In the layut file:
+In the layout file:
 
 ```html
 <%- stylesheets('app') %>
@@ -91,4 +101,16 @@ In the layut file:
 
 express 3.x
 ===========
-I have a version that works in express 3 using middleware instead of helpers and will upload that at some point.
+Minimus supports Express 3.x apps through middleware triggered by a special flag:
+
+```javascript
+
+// inside app.configure
+
+minimus = minimus({
+    express3: true,
+    useMinified: false,
+    yamlFilePath: __dirname + '/config/assets.yml'
+});
+
+app.use(minimus);
