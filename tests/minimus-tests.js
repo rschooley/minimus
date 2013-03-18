@@ -5,11 +5,13 @@ var should      = require('should'),
 
 describe('minimus', function () {
 	describe('with settings', function () {
+		
 		describe('for express 2.x', function () {
-			var assets = {};
+			var assets 		= {},
+				assetsFile 	= process.cwd() + '/tests/assets.yml';
 
 			before(function () {
-				assets = minimus({ express3: false });
+				assets = minimus({ assetsFile: assetsFile, express3: false });
 			});
 
 			it('should return an object', function () {
@@ -29,12 +31,14 @@ describe('minimus', function () {
 		});
 
 		describe('for express 3.x', function () {
-			var assets 	= {},
-				req 	= {},
-				res 	= {};
+			var assets 		= {},
+				assetsFile 	= '',
+				req 		= {},
+				res 		= {};
 
 			before(function () {
-				assets = minimus({ express3: true });
+				assetsFile 	= process.cwd() + '/tests/assets.yml';
+				assets 		= minimus({ assetsFile: assetsFile, express3: true });
 
 				res = {
 					locals: {}

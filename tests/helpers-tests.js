@@ -1,6 +1,5 @@
 
 var should      = require('should'),
-	yaml    	= require('js-yaml'); // register .yaml require handler (mind = blown)
 
 	helpers		= require('../lib/helpers');
 
@@ -11,14 +10,27 @@ describe('helpers', function () {
 	});
 
 	describe('#assets', function () {
+		var assetsFile = '';
+
+		before(function () { 
+			assetsFile = process.cwd() + '/tests/assets.yml';
+		});
+
 		it('should have an "assets" function', function () {
 			should.exist(helpers.assets);
 		});
 
 		it('should return an object', function () {
-			//var assetsFile = helpers.defaults.assetsFile 
+			var assets = helpers.assets(assetsFile);
 
-			//helpers.assets();
+			should.exist(assets);
+			assets.should.be.a('object');
+		});
+	});
+
+	describe('#baseUrl', function () {
+		it('should have a "baseUrl" function', function () {
+			should.exist(helpers.baseUrl);
 		});
 	});
 
