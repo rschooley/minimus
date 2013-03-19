@@ -6,7 +6,7 @@ var exec	= require('child_process').exec,
     path 	= require('path'),
     Step	= require('step'),
     util    = require('util'),
-    yaml    = require('yaml');
+    yaml    = require('js-yaml'); // register .yaml require handler
 
 fs.exists = fs.exists || require('path').exists;                                // wuh? https://github.com/joyent/node/issues/3005
 
@@ -31,17 +31,14 @@ fs.exists = fs.exists || require('path').exists;                                
         console.log('processing yaml file: ' + yamlFilePath);
  
         Step(
-            function readYamlFile () {
-                fs.readFile(yamlFilePath, 'utf-8', this);
-            },
-            function parseYamlFile (err, data) {
-                if (err) return callback(err);
-
+            function () {
                 try {
-                    assets = yaml.eval(data);                    
+                    assets = require(yamlFilePath);
+            
+                    if (!assets.hasOwnProperty('s3')) throw new Error('missing s3 section in yaml file');
                 }
                 catch (err) {
-                    return this(err);
+                    return callback(err);
                 }
 
                 this(undefined);
@@ -86,10 +83,10 @@ fs.exists = fs.exists || require('path').exists;                                
                     };
                     
                     if (assets.s3.hasOwnProperty('hash')) {
-                        fileWithHash = file.replace('.', '-' + assets.s3.hash + '.');
+                        file = file.replace('.', '-' + assets.s3.hash + '.');
                     }
                     
-                    client.putFile(filePath, assetType(file) + '/' + fileWithHash, headers, group());
+                    client.putFile(filePath, assetType(file) + '/' + file, headers, group());
                 });
             },
             function done (err, stdout, stderr) {
