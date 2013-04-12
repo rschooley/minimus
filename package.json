@@ -1,15 +1,16 @@
 {
-	"name": "minimus", 
-	"version": "0.0.1", 
-	"dependencies": {
-	    "knox": ">= 0.3.1",
-		"step": ">= 0.0.5",
-		"stylus": ">= 0.29.0",
-		"yaml": ">= 0.2.3",
-        "js-yaml": "*"		
-	}, 
-	"engines": {
-    	"node": "*"
-	},
-	"main": "./lib/minimus.js"
+  "name": "minimus",
+  "version": "0.0.1",
+  "dependencies": {
+    "knox": ">= 0.3.1",
+    "step": ">= 0.0.5",
+    "stylus": ">= 0.29.0",
+    "yaml": ">= 0.2.3",
+    "js-yaml": "*",
+    "glob": "~3.1.21"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "main": "./lib/minimus.js"
 }
