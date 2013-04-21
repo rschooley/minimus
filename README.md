@@ -108,9 +108,11 @@ Minimus supports Express 3.x apps through middleware triggered by a special flag
 // inside app.configure
 
 minimus = minimus({
-    express3: true,
-    useMinified: false,
-    yamlFilePath: __dirname + '/config/assets.yml'
+    assetsFile: __dirname + '/config/assets.yml',
+    debug:      false,
+    express3:   true,
+    minify:     false    
 });
+
 
 app.use(minimus);
