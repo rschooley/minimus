@@ -114,8 +114,15 @@ fs.exists = fs.exists || require('path').exists;                                
                 return 'javascripts';
                 break;
 
+            case '.png':
+            case '.jpg':
+            case '.jpeg':
+            case '.gif':
+                return 'images';
+                break;
+
             default:
-                return'';
+                return '';
         }
     }
 
@@ -133,8 +140,21 @@ fs.exists = fs.exists || require('path').exists;                                
                 return 'application/javascript';
                 break;
 
+            case '.png':
+                return 'image/png';
+                break;
+
+            case '.jpg':
+            case '.jpeg':
+                return 'image/jpeg';
+                break;
+
+            case '.gif':
+                return 'image/gif';
+                break;
+
             default:
-                return'';
+                return '';
         }
     }
 })();
