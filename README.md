@@ -1,11 +1,11 @@
-Overview
-=======
-
+# Minimus
 Asset bundler and deployer for node and S3.
 
-Install
-=============
-Minimus is currently not available through npm.  The project can be loaded by adding the following to your package.json file:
+
+## Install
+Minimus is currently not available through npm.  
+
+The project can be loaded by adding the following to your package.json file:
 
 ```javascript
 {
@@ -15,44 +15,90 @@ Minimus is currently not available through npm.  The project can be loaded by ad
 }
 ```
 
-current state
-=============
-The initial seed is a fully working module from a production app.  The code is not an npm package, doesn't have unit tests, and has a lot of hard coding going on.  It does load assets from yaml uncompressed in dev (NODE_ENV), minified in prod, and uses jammit to bundle assets and then pushes them to S3.
+## Configuring
+The minimus module should be laoded in your primary node app file (app.js, web.js, server.js, etc).
 
-*You should not be using this unless you are me, in which case then go right ahead.  There is much to be done before others can use this.*
+var minimus = require('minimus');
 
-sample yaml file
-================
-sample config/assets.yml
+var assets = minimus({
+    assetsFile:     __dirname + '/config/assets.yml',   // path to asset file (below)
+    minify:         false                               // pass in boolean based on NODE_ENV
+});
 
-```yaml
-s3:
+## Asset File
+
+```yml
+s3:                 # where css, js, and jst will be minified and deployed when ```minify: true```
     key: foo
     secret: bar
     bucket: baz
 
 javascripts:
-    app:
-        - public/javascripts/_vendor/plugins.js
-        - public/javascripts/_vendor/jquery.tmpl.min.js
-        - public/javascripts/_vendor/json2.js
-        - public/javascripts/_vendor/underscore-min.js
-        - public/javascripts/_vendor/backbone-min.js
-        - public/javascripts/app.js
-        - public/javascripts/views/hello-world.js
-        - public/templates/hello-world.jst
-        
     modernizr:
-        - public/javascripts/_vendor/modernizr-2.5.3.min.js
+        - public/javascripts/_vendor/modernizr.min.js
+
+    common:
+        # core
+        - public/javascripts/_vendor/plugins.js
+        - public/javascripts/_vendor/bootstrap-min.js
+
+        # views
+        - public/javascripts/views/foos/super-special-view.js
+        - public/javascripts/views/foos/*
+        - public/javascripts/views/bars/*
+
+        # templates
+        - public/templates/foos/*
+        - public/templates/bars/*
 
 stylesheets:
-    app:
-        - public/stylesheets/_vendor/boilerplate-min.css
+    common:
+        - public/stylesheets/_vendor/*
         - public/stylesheets/site.css
 ```
 
-sample express 2.x
-==================
+## Wilcards
+Please note only one level of wildcard mapping is supported.
+
+```yml
+- public/javascripts/views/foos/*       # will match all files in the foos dir
+```
+
+Will not work:
+```yml
+- public/javascripts/views/*            # will match all files in the views dir, not in the child dirs below
+```
+
+## Using
+In Express 3.x minimus is run as middleware adding the following to ```res.locals```:
+```javascript
+stylesheets
+javascripts
+```
+
+These are included in views with a function call:
+```html
+<%- stylesheets('sectionName') %>
+```
+
+where ```sectionName``` is a section from the assets.yml file above
+
+
+## Deploying
+The following command will read the assets.yml file and deploy to the specified Amazon S3 bucket.
+
+```bash
+node_modules/minimus/bin/minimus
+```
+
+Setting the ```minify``` option to true in the minimus function will use the specified S3 bucket for the assets
+
+
+## Images
+Images are not deployed as part of this process; they must be uploaded manually.
+
+
+## Express 2.x Sample
 Minimus supports Express 2.x apps through helpers.
 
 ```javascript
@@ -60,6 +106,7 @@ Minimus supports Express 2.x apps through helpers.
 // inside app.configure
 
 minimus = minimus({
+    express3: false,
     useMinified: false,
     yamlFilePath: __dirname + '/config/assets.yml'
 });
@@ -88,31 +135,3 @@ app.dynamicHelpers ({
     }
 });
 ```
-
-In the layout file:
-
-```html
-<%- stylesheets('app') %>
-<%- javascripts('modernizr') %>
-
-...
-<%- javascripts('app') %>
-```
-
-express 3.x
-===========
-Minimus supports Express 3.x apps through middleware triggered by a special flag:
-
-```javascript
-
-// inside app.configure
-
-minimus = minimus({
-    assetsFile: __dirname + '/config/assets.yml',
-    debug:      false,
-    express3:   true,
-    minify:     false    
-});
-
-
-app.use(minimus);
