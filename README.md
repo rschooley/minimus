@@ -27,6 +27,21 @@ var assets = minimus({
 });
 ```
 
+and then added as middleware in configure.
+
+```javascript
+app.configure(function () {
+    ...
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
+    
+    app.use(assets);
+    
+    app.use(app.router);
+    ...
+});
+```
+
 ## Asset File
 
 ```yml
