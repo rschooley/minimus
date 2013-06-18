@@ -10,7 +10,7 @@ The project can be loaded by adding the following to your package.json file:
 ```javascript
 {
     ....
-    "minimus": "git+https://github.com/rschooley/minimus.git",
+    "minimus": "git+https://github.com/rschooley/minimus.git#cleanup",
     ...
 }
 ```
@@ -18,17 +18,19 @@ The project can be loaded by adding the following to your package.json file:
 ## Configuring
 The minimus module should be laoded in your primary node app file (app.js, web.js, server.js, etc).
 
+```javascript
 var minimus = require('minimus');
 
 var assets = minimus({
     assetsFile:     __dirname + '/config/assets.yml',   // path to asset file (below)
     minify:         false                               // pass in boolean based on NODE_ENV
 });
+```
 
 ## Asset File
 
 ```yml
-s3:                 # where css, js, and jst will be minified and deployed when ```minify: true```
+s3:             # where css, js, and jst will be minified and deployed when ```minify: true```
     key: foo
     secret: bar
     bucket: baz
@@ -55,6 +57,7 @@ stylesheets:
     common:
         - public/stylesheets/_vendor/*
         - public/stylesheets/site.css
+
 ```
 
 ## Wilcards
@@ -81,7 +84,7 @@ These are included in views with a function call:
 <%- stylesheets('sectionName') %>
 ```
 
-where ```sectionName``` is a section from the assets.yml file above
+where ```sectionName``` is a section from the assets.yml file above.
 
 
 ## Deploying
@@ -91,7 +94,7 @@ The following command will read the assets.yml file and deploy to the specified 
 node_modules/minimus/bin/minimus
 ```
 
-Setting the ```minify``` option to true in the minimus function will use the specified S3 bucket for the assets
+Setting the ```minify``` option to true in the minimus function will use the specified S3 bucket for the assets.
 
 
 ## Images
@@ -126,11 +129,6 @@ app.dynamicHelpers ({
     stylesheets: function (req, res) {
         return function (name) {
             return minimus.stylesheets(name);
-        }
-    },
-    env: function (req, res) {
-        return function () {
-            return settings.env;
         }
     }
 });
