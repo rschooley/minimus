@@ -10,7 +10,7 @@ The project can be loaded by adding the following to your package.json file:
 ```javascript
 {
     ....
-    "minimus": "git+https://github.com/rschooley/minimus.git#cleanup",
+    "minimus": "git+https://github.com/rschooley/minimus.git#v0.1.1",
     ...
 }
 ```
