@@ -61,11 +61,11 @@ describe('helpers', function () {
 			debug.should.equal(false);
 		});
 
-		it('should default "express3" to false', function () {
+		it('should default "express3" to true', function () {
 			var express3 = helpers.defaults.express3;
 
 			should.exist(express3);
-			express3.should.equal(false);
+			express3.should.equal(true);
 		});
 
 		it('should default "minify" to false', function () {
