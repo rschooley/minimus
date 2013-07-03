@@ -1,6 +1,6 @@
 {
 	"name": "minimus", 
-	"version": "0.1.0", 
+	"version": "0.1.1", 
 	"dependencies": {
 	    "js-yaml": "*",
 	    "knox": ">= 0.3.1",
