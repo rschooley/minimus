@@ -1,6 +1,6 @@
 {
 	"name": "minimus", 
-	"version": "0.1.0", 
+	"version": "0.0.1", 
 	"dependencies": {
 	    "js-yaml": "*",
 	    "knox": ">= 0.3.1",
@@ -15,5 +15,21 @@
 	"engines": {
     	"node": "*"
 	},
-	"main": "./lib/minimus.js"
+	"author": { 
+        "name" : "Robert Schooley",
+        "email": "robert.schooley@gmail.com"
+    },
+    "bin": "./bin/minimus",
+    "bugs": "https://github.com/rschooley/minimus/issues",
+    "description": "Asset bundler for express.js apps with S3 deployment option",
+    "homepage": "https://github.com/rschooley/minimus",
+    "keywords": [ "assets", "minification", "deployment" ],
+    "license": "MIT",
+    "main": "./lib/minimus.js",
+    "os": [ "darwin", "linux" ],
+    "private": false,
+    "repository": { 
+        "type" : "git",
+        "url" : "https://github.com/rschooley/minimus.git"
+    }
 }
