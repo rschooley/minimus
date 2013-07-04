@@ -3,9 +3,7 @@ Asset bundler and deployer for node and S3.
 
 
 ## Install
-Minimus is currently not available through npm.  
-
-The project can be loaded by adding the following to your package.json file:
+The project can be install with npm.  In the package.json file add:
 
 ```javascript
 {
