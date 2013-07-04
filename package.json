@@ -17,7 +17,8 @@
         "node": "*"
     },
     "author": { 
-        "name" : "Robert Schooley"
+        "name" : "Robert Schooley",
+        "email": "robert.schooley@gmail.com"
     },
     "bin": "./bin/minimus",
     "bugs": "https://github.com/rschooley/minimus/issues",
