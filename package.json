@@ -24,7 +24,7 @@
     "description": "Asset bundler for express.js apps with S3 deployment option",
     "homepage": "https://github.com/rschooley/minimus",
     "keywords": [ "assets", "minification", "deployment" ],
-    "license": "BSD",
+    "license": "MIT",
     "os": [ "darwin", "linux" ],
     "private": false,
     "repository": { 
