@@ -8,7 +8,7 @@ The project can be install with npm.  In the package.json file add:
 ```javascript
 {
     ....
-    "minimus": "0.1.1",
+    "minimus": "0.1.2",
     ...
 }
 ```
