@@ -38,7 +38,7 @@ fs.exists = fs.exists || require('path').exists;                                
                 if (err) return callback(err);
 
                 try {
-                    assets = yaml.eval(data);                    
+                    assets = yaml.eval(data);
                 }
                 catch (err) {
                     return this(err);
