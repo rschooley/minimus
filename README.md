@@ -3,14 +3,9 @@ Asset bundler and deployer for node and S3.
 
 
 ## Install
-The project can be install with npm.  In the package.json file add:
-
-```javascript
-{
-    ....
-    "minimus": "0.1.2",
-    ...
-}
+The project can be install with npm.
+```bash
+npm install minimus
 ```
 
 ## Configuring
