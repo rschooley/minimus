@@ -1,143 +1,77 @@
 #!/usr/bin/env node
 
-var exec	= require('child_process').exec,
+var exec    = require('child_process').exec,
     fs      = require('fs'),
     knox    = require('knox'),
-    path 	= require('path'),
-    Step	= require('step'),
+    Step    = require('step'),
     util    = require('util'),
-    yaml    = require('yaml');
 
-fs.exists = fs.exists || require('path').exists;                                // wuh? https://github.com/joyent/node/issues/3005
+    helpers = require('../lib/helpers');
 
 (function () {
-    var stylusAppPath   = __dirname + '/../node_modules/stylus/bin/stylus',        // use this app's modules
-    
-        callingPath     = process.cwd(),                                        // stuff for the caller
-        assetsPath      = callingPath + '/public/assets',                       // todo: arg
-        cssDirPath      = callingPath + '/public/stylesheets/',                 // todo: arg        
-        stylusFilePath  = callingPath + '/public/stylesheets/site.styl',        // todo: arg
-        yamlFilePath    = callingPath + '/config/assets.yml',                   // todo: arg
+    var settings    = helpers.settings(),
+        assets      = helpers.assets(settings.assetsFile),                      // blocking under the hood
+        client      = knox.createClient(assets.s3);
 
-        assets          = {};
+    console.log('processing yaml file: ' + settings.assetsFile);
 
-    bundle(function (err) {
-        if (err) {
-            console.error(err);
-        }
-    });
-    
-    function bundle (callback) {
-        console.log('processing yaml file: ' + yamlFilePath);
- 
-        Step(
-            function readYamlFile () {
-                fs.readFile(yamlFilePath, 'utf-8', this);
-            },
-            function parseYamlFile (err, data) {
-                if (err) return callback(err);
+    Step(
+        function execJammit () {
+            var command = util.format('jammit -f -c %s -o %s', settings.assetsFile, settings.minifiedPath);
 
-                try {
-                    assets = yaml.eval(data);
-                }
-                catch (err) {
-                    return this(err);
-                }
-
-                this(undefined);
-            },
-            // function compileCssWithStylus (err) {
-            //     if (err) return callback(err);
-            //     
-            //     // make sure the css file is up to date
-            //     var command = util.format('%s %s --out %s', stylusAppPath, stylusFilePath, cssDirPath);
-            //     exec(command, this);
-            // },
-            function execJammit (err, stdout, stderr) {
-                err = err || stderr;
-                if (err) return callback(err);
+            exec(command, this);
+        },
+        function readAssetDir (err, stdout, stderr) {
+            err = err || stderr;
+            if (err) throw err;
             
-                var command = util.format('jammit -f -c %s -o %s', yamlFilePath, assetsPath);
-                exec(command, this);
-            },
-            function readAssetDir (err, stdout, stderr) {
-                err = err || stderr;
-                if (err) return callback(err);
+            fs.readdir(settings.minifiedPath, this);
+        },
+        function pushAssetsToS3 (err, files) {
+            if (err) throw err;
                 
-                console.log('minified assets to ' + assetsPath);
+            var group = this.group();
                 
-                fs.readdir(assetsPath, this);
-            },
-            function pushAssetsToS3 (err, files) {
-                if (err) return callback(err);
-                
-                var client  = knox.createClient(assets.s3),
-                    group   = this.group();
-                
-                files.forEach(function (file) {
-                    var filePath        = assetsPath + '/' + file,
-                        fileWithHash    = '';
-                        extension       = path.extname(file),
-                        headers         = {};
-                    
-                    headers = {
-                        'Content-Type': contentType(extension),     // MIME
-                        'x-amz-acl': 'public-read'
-                    };
-                    
-                    if (assets.s3.hasOwnProperty('hash')) {
-                        fileWithHash = file.replace('.', '-' + assets.s3.hash + '.');
-                    }
-                    
-                    client.putFile(filePath, assetType(file) + '/' + fileWithHash, headers, group());
-                });
-            },
-            function done (err, stdout, stderr) {
-                err = err || stderr;
-                if (err) return callback(err);
-                
-                console.log('files uploaded to S3');
+            files.forEach(function (file) {
+                pushFile(file, group());
+            });
+        },
+        function done (err) {
+            if (err) {
+                console.error(err);
+                process.exit(1);
             }
-        );    
-    }
-    
-    function assetType (file) {
-        var extension = path.extname(file);
-        
-        switch (extension) {
-            case '.css':
-                return 'stylesheets';
-                break;
-                  
-            case '.gz':
-                return assetType(file.replace('.gz', ''));
-                break;
-              
-            case '.js':
-                return 'javascripts';
-                break;
-                  
-            default: 
-                return'';
+            else {
+                console.log('files uploaded to S3');
+                process.exit(0);
+            }
         }
-    }
-    
-    function contentType (extension) {
-        switch (extension) {
-            case '.css':
-                return 'text/css';
-                break;
-                  
-            case '.gz':
-                return 'application/x-gzip';
-                break;
-              
-            case '.js':
-                return 'application/javascript';
-                break;
-                  
-            default: 
-                return'';
+    );
+
+    function pushFile (file, callback) {
+        var sourcePath      = settings.minifiedPath + '/' + file,           // ex. '/path/to/proj/assets/foo.js'
+            destinationPath = helpers.mapAssetType(file) + '/' + file,      // ex. 'javascripts/foo.js' under S3 bucket
+            headers         = {};
+
+        // override with hash
+        if (assets.s3.hasOwnProperty('hash')) {
+            destinationPath = destinationPath.replace('.', '-' + assets.s3.hash + '.');
         }
-    }
+
+        headers = {
+            'Content-Type': helpers.mapMimeType(file),
+            'x-amz-acl':    'public-read'
+        };
+                
+        client.putFile(sourcePath, destinationPath, headers, function (err, res) {
+            if (err || res.statusCode !== 200) {
+                console.error('failed uploading file: ' + destinationPath + ' with status: ' + res.statusCode);
+            }
+            else {
+                console.log('uploaded file: ' + assets.s3.bucket + '/' + destinationPath);
+            }
+
+            callback(err);
+        });
+    };
 })();
