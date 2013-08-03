@@ -6,10 +6,10 @@ var exec    = require('child_process').exec,
     Step    = require('step'),
     util    = require('util'),
 
-    helpers = require('./helpers');
+    helpers = require('../lib/helpers');
 
 (function () {
-    var settings    = helpers.settings(options),
+    var settings    = helpers.settings(),
         assets      = helpers.assets(settings.assetsFile),                      // blocking under the hood
         client      = knox.createClient(assets.s3);
 
@@ -63,12 +63,12 @@ var exec    = require('child_process').exec,
             'x-amz-acl':    'public-read'
         };
                 
-        client.putFile(sourcePath, destinationPath, headers, function (err) {
-            if (err) {
-                console.error('failed uploading file: ' + destinationPath);
+        client.putFile(sourcePath, destinationPath, headers, function (err, res) {
+            if (err || res.statusCode !== 200) {
+                console.error('failed uploading file: ' + destinationPath + ' with status: ' + res.statusCode);
             }
             else {
-                console.log('uploaded file: ' + destinationPath);
+                console.log('uploaded file: ' + assets.s3.bucket + '/' + destinationPath);
             }
 
             callback(err);
