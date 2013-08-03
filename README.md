@@ -39,9 +39,9 @@ app.configure(function () {
 
 ```yml
 s3:             # where css, js, and jst will be minified and deployed when ```minify: true```
+    bucket: baz
     key: foo
     secret: bar
-    bucket: baz
 
 javascripts:
     modernizr:
