@@ -117,9 +117,9 @@ Minimus supports Express 2.x apps through helpers.
 // inside app.configure
 
 minimus = minimus({
-    express3: false,
-    useMinified: false,
-    yamlFilePath: __dirname + '/config/assets.yml'
+    assetsFile: __dirname + '/config/assets.yml',
+    express3:   false,
+    minify:     false
 });
 
 ...
