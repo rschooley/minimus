@@ -6,8 +6,7 @@
         "js-yaml": "*",
         "knox": ">= 0.3.1",
         "step": "*",
-        "underscore": "*",
-        "yaml": ">= 0.2.3"
+        "underscore": "*"
     },
     "devDependencies": {
         "mocha": "*",
