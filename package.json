@@ -3,6 +3,7 @@
     "version": "0.1.3", 
     "main": "./lib/minimus.js",
     "dependencies": {
+        "glob": "*",
         "js-yaml": "*",
         "knox": ">= 0.3.1",
         "step": "*",
